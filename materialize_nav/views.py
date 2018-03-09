@@ -110,6 +110,7 @@ class BaseNavOptions(object):
 
         context['previous_page'] = request.META.get("HTTP_REFERER", '/')
         context['notification'] = request.GET.get("notification", notification)
+        context['request'] = {'user': request.user}
 
         # Notify that the nav context was loaded
         request.nav_context_loaded = True
