@@ -15,8 +15,8 @@ def is_nav_header(item):
 @register.inclusion_tag("materialize_nav/navbar/nav.html", takes_context=True)
 def render_nav(context, has_pannel=None):
     """Render a navigation sidebar that hides on large devices using the title bar for navigation."""
-    if not hasattr(context["request"], "nav_context_loaded") or not context["request"].nav_context_loaded:
-        context = NavView.get_context(context['request'], context)
+    # if not hasattr(context["request"], "nav_context_loaded") or not context["request"].nav_context_loaded:
+    #     context = NavView.get_context(context['request'], context)
     if has_pannel is not None:
         context["SidePannel"] = has_pannel
     return context
