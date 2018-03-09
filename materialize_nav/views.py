@@ -126,7 +126,7 @@ class BaseNavOptions(object):
         context['notification'] = request.GET.get("notification", notification)
 
         # Fake the request.user
-        context['request'] = FakeDict(user=request.user)
+        context['request'] = FakeDict(user=request.user, path=request.path)
 
         # Notify that the nav context was loaded
         request.nav_context_loaded = True
