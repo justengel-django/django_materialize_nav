@@ -102,6 +102,20 @@ class TitleViewMetaclass(type):
                     pass
 
 
+class FakeDict(object):
+    def __init__(self, *args, **kwargs):
+        self.d = dict(*args, **kwargs)
+
+    def __getitem__(self, item):
+        return self.d[item]
+
+    def __setitem__(self, item, value):
+        self.d[item] = value
+
+    def __getattr__(self, item):
+        return self.d[item]
+
+
 class BaseNavOptions(object):
     @classmethod
     def get_context(cls, request, context=None, *, notification=None, **kwargs):
@@ -112,8 +126,7 @@ class BaseNavOptions(object):
         context['notification'] = request.GET.get("notification", notification)
 
         # Fake the request.user
-        context['request'] = {'user': request.user}
-        context['request'].user = request.user
+        context['request'] = FakeDict(user=request.user)
 
         # Notify that the nav context was loaded
         request.nav_context_loaded = True
