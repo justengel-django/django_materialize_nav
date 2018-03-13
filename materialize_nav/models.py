@@ -17,8 +17,6 @@ from django.contrib.auth.models import AbstractUser
 from django.core.files.storage import FileSystemStorage
 from django.contrib.staticfiles.templatetags.staticfiles import static
 
-from .utils import image_exists
-
 
 # ===== Additional settings =====
 settings.PROFILE_THUMBNAIL_DIRECTORY = getattr(settings, "PROFILE_THUMBNAIL_DIRECTORY", "materialize_nav/accounts/thumbnail")
@@ -92,13 +90,13 @@ class User(AbstractUser):
 
     def has_thumbnail(self):
         try:
-            return image_exists(self.thumbnail.url)
+            return self.thumbnail.url != ""
         except:
             return False
 
     def has_background_image(self):
         try:
-            return image_exists(self.background_image.url)
+            return self.background_image.url != ""
         except:
             return False
 
