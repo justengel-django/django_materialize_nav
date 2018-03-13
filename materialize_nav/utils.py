@@ -5,8 +5,9 @@ from django.urls import reverse
 
 import os
 
+import math
 
-__all__ = ["list_property", "NavHeader", "NavItem", 'SearchResult', 'nav_redirect', 'image_exists']
+__all__ = ["list_property", "NavHeader", "NavItem", 'SearchResult', 'nav_redirect', 'image_exists', 'get_star_type']
 
 
 class list_property(property):
@@ -107,13 +108,20 @@ class NavItem(list):
     url = list_property(0, "")
     label = list_property(1, "")
     icon = list_property(2, "")
+    app = list_property(3, None)
+    url_args = list_property(4, None)
+    url_kwargs = list_property(5, None)
 
-    def __init__(self, url, label="", icon="", *args, url_args=None, url_kwargs=None):
+    def __init__(self, url, label="", icon="", app=None, url_args=None, url_kwargs=None, *args):
         if isinstance(url, NavItem):
             icon = url.icon
             label = url.label
+            app = url.app
+            url_args = url.url_args
+            url_kwargs = url.url_kwargs
             url = url.url
-        super().__init__((url, label, icon) + args)
+
+        super().__init__((url, label, icon, app, url_args, url_kwargs) + args)
         if url_args is None:
             url_args = []
         if url_kwargs is None:
@@ -128,14 +136,13 @@ class NavItem(list):
         except:
             url = ""
 
-        if "/" not in url:
+        try:
+            url = reverse(url, args=self.url_args, kwargs=self.url_kwargs)
+        except:
             try:
-                url = reverse(url, args=self.url_args, kwargs=self.url_kwargs)
+                url = url.get_absolute_url()
             except:
-                try:
-                    url = url.get_absolute_url()
-                except:
-                    pass
+                pass
         return url
 
     def is_header(self):
@@ -178,7 +185,8 @@ def nav_redirect(*args, get_params=None, **kwargs):
 
 def image_exists(image_path):
     """Return if an image or file exists."""
-    if os.path.exists(image_path):
+    image_path = str(image_path)
+    if os.path.exists(image_path) or (os.path.exists("." + image_path) and os.path.isfile("." + image_path)):
         return True
 
     try:
@@ -186,3 +194,13 @@ def image_exists(image_path):
         return r.status_code == 200
     except:
         return False
+
+
+def get_star_type(index, ranking):
+    """Return the icon class name for the given star index and average ranking."""
+    if ranking < index or (ranking == 0 and index == 0):
+        return "star_border_icon"
+    elif math.floor(ranking) > index or (ranking % 1 == 0 and ranking == index):
+        return "star_icon"
+    else:
+        return "star_half_icon"

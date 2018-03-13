@@ -48,6 +48,19 @@ a > i{
 
 
 /* icons star star_border star_half */
+.star-list{
+    display: inline-block;
+    list-style: none;
+    margin-top: 0.2rem;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+.star-list label{
+    cursor: pointer;
+}
+.star-list-item{
+    display: inline;
+}
 .star_icon:after{
     content: "star";
 }
@@ -56,13 +69,6 @@ a > i{
 }
 .star_border_icon:after{
     content: "star_border";
-}
-.star > input[type=checkbox] + i:after{
-    content: "star_border";
-}
-
-.star > input[type=checkbox]:checked + i:after {
-    content: "star";
 }
 
 .card{

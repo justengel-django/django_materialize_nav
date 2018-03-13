@@ -17,6 +17,11 @@
     <script src="{% static '/materialize/js/materialize.min.js' %}"></script>
 {% endif %}
 
+{% if stars %}
+    {# <!--Import stars helper functions--> #}
+    <script src="{% static 'materialize_nav/stars.js' %}"></script>
+{% endif %}
+
 {% if style %}
     {# <!--Import my style wrapper--> #}
     <link type="text/css" rel="stylesheet" href="{% static 'materialize_nav/materialize_nav_style.css' %}" media="screen"/>

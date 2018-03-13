@@ -1,16 +1,22 @@
 from django.utils.safestring import mark_safe
 
 from .base import register
-
+from ...utils import get_star_type
 
 __all__ = ["include_materialize_header", "render_link_item", "define", "getitem", "getattribute", "replace"]
 
 
+@register.inclusion_tag("materialize_nav/forms/widgets/stars.html")
+def show_stars(ranking, num_stars=5, color="yellow"):
+    stars = [get_star_type(i, ranking) for i in range(num_stars)]
+    return {'widget': {'num_stars': num_stars, "ranking": ranking, "stars": stars, "color": color}}
+
+
 @register.inclusion_tag("materialize_nav/html/materialize_header.html")
-def include_materialize_header(icons=True, jquery=True, materializecss=True, style=True, favicon=True,
+def include_materialize_header(icons=True, jquery=True, materializecss=True, style=True, stars=True, favicon=True,
                                ajax_helper=True):
-    return {"icons": icons, "jquery": jquery, "materializecss": materializecss, "style": style, "favicon": favicon,
-            "ajax_helper": ajax_helper}
+    return {"icons": icons, "jquery": jquery, "materializecss": materializecss, "style": style, "stars": stars,
+            "favicon": favicon, "ajax_helper": ajax_helper}
 
 
 @register.inclusion_tag("materialize_nav/html/link_item.html")

@@ -3,8 +3,10 @@ from django.db.models import CharField, TextField, Q, ForeignKey
 
 from .utils import SearchResult
 
+from .widgets import StarSelectWidget
 
-__all__ = ["SearchForm", "SearchResult"]
+
+__all__ = ["SearchForm", "SearchResult", "StarSelectWidget"]
 
 
 class SearchForm(forms.Form):
@@ -70,3 +72,10 @@ class SearchForm(forms.Form):
         return search_results
 
 
+class StarSelectField(forms.ChoiceField):
+    widget = StarSelectWidget
+
+    def __init__(self, *args, **kwargs):
+        if "label" not in kwargs:
+            kwargs["label"] = ''
+        super().__init__(*args, **kwargs)
