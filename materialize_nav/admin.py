@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.contrib.auth.admin import UserAdmin
 
+from .models import User
 
 if settings.AUTH_USER_MODEL == 'materialize_nav.User':
     from .models import User

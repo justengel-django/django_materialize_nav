@@ -8,7 +8,6 @@ Settings to override:
     PROFILE_BACKGROUND_DEFAULT   = "accounts/default_background.png"  # Static file
 """
 import os
-from django.contrib.auth import get_user_model
 from django.db import models
 
 # Import the user model. This needs to be here after the settings are imported.
