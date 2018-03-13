@@ -186,13 +186,12 @@ def nav_redirect(*args, get_params=None, **kwargs):
 def image_exists(image_path):
     """Return if an image or file exists."""
     image_path = str(image_path)
-    if os.path.exists(image_path) or (os.path.exists("." + image_path) and os.path.isfile("." + image_path)):
-        return True
-
     try:
         r = requests.get(image_path)
         return r.status_code == 200
     except:
+        if os.path.exists(image_path) or (os.path.exists("." + image_path) and os.path.isfile("." + image_path)):
+            return True
         return False
 
 
