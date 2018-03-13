@@ -1,5 +1,5 @@
 {% load materialize_nav %}
-<nav class="top-nav {{ NavColor }}">
+<nav class="top-nav {% if NavColor %}{{ NavColor }}{% else %}teal{% endif %}">
 <header {% if ShowSidebar and FixedSidebar %}class="show_fixed_sidebar"{% endif %}>
     <div class="nav-wrapper">
     {% if ShowSidebar %}

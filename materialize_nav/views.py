@@ -1,4 +1,5 @@
 import collections
+import copy
 from django.db.models import CharField, TextField, Q, ForeignKey
 from django.http import JsonResponse
 from django.urls import reverse
@@ -8,6 +9,7 @@ from django.core.paginator import Paginator
 from django.views.generic.base import TemplateResponseMixin, ContextMixin, View, TemplateView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import MultipleObjectMixin
+import dynamicmethod
 
 from .forms import SearchForm
 from .utils import NavHeader, NavItem, list_property
@@ -117,8 +119,8 @@ class FakeDict(object):
 
 
 class BaseNavOptions(object):
-    @classmethod
-    def get_context(cls, request, context=None, *, notification=None, **kwargs):
+    @dynamicmethod
+    def get_context(self, request, context=None, *, notification=None, **kwargs):
         if context is None:
             context = {}
 
@@ -144,22 +146,43 @@ class TitleOptions(BaseNavOptions):
     HomeURL = ""
     _HomeURL_CACHE_ = None
 
-    @classmethod
-    def get_context(cls, request, context=None, *, title=None, page_title=None, **kwargs):
-        context = super().get_context(request, context=context, title=title, page_title=page_title, **kwargs)
+    def __init__(self, *args, app_name=None, title=None, page_title=None, show_page_title=None, home_url=None,
+                 **kwargs):
+        if app_name is not None:
+            self.AppName = app_name
+        if title is not None:
+            self.Title = title
+        if page_title is not None:
+            self.PageTitle = page_title
+        if show_page_title is not None:
+            self.ShowPageTitle = show_page_title
+        if home_url is not None:
+            self.HomeURL = home_url
+
+        super().__init__(*args, **kwargs)
+
+    @dynamicmethod
+    def get_context(self, request, context=None, *, title=None, page_title=None, show_page_title=None, home_url=None,
+                    **kwargs):
+        context = super().get_context(request, context=context, **kwargs)
 
         # Title
         if title is None:
-            title = cls.Title
+            title = self.Title
 
         # Page Title
         if not page_title:
-            page_title = cls.PageTitle
+            page_title = self.PageTitle
+
+        # Show page title
+        if show_page_title is None:
+            show_page_title = self.ShowPageTitle
 
         # Home url
-        home_url = cls._HomeURL_CACHE_
+        if home_url is None:
+            home_url = self._HomeURL_CACHE_
         if not home_url:
-            home_url = cls.HomeURL
+            home_url = self.HomeURL
             try:
                 home_url = reverse(home_url)
             except:
@@ -167,13 +190,13 @@ class TitleOptions(BaseNavOptions):
                     home_url = home_url.get_absolute_url()
                 except:
                     pass
-            cls._HomeURL_CACHE_ = home_url
+            self._HomeURL_CACHE_ = home_url
 
-        context["AppName"] = cls.AppName
-        context['DefaultTitle'] = cls.DefaultTitle
+        context["AppName"] = self.AppName
+        context['DefaultTitle'] = self.DefaultTitle
         context['Title'] = title
         context["PageTitle"] = page_title
-        context["ShowPageTitle"] = cls.ShowPageTitle
+        context["ShowPageTitle"] = show_page_title
         context['HomeURL'] = home_url
 
         return context
@@ -185,19 +208,33 @@ class NavBarOptions(BaseNavOptions):
     NavHeader = NavHeader
     NavColor = ""
 
-    @classmethod
-    def add_navigation_header(cls, app, icon=""):
-        new_nav_header = cls.NavHeader(app, icon)
+    def __init__(self, *args, nav_color=None, nav_items=None, **kwargs):
+        self.AppNavigation = self.get_app_navigation()
+
+        if nav_color is not None:
+            self.NavColor = nav_color
+        if nav_items is not None:
+            for item in nav_items:
+                if isinstance(item, NavHeader) or len(item) == 1:
+                    self.add_navigation_header(*item)
+                else:
+                    self.add_navigation(*item)
+
+        super().__init__(*args, **kwargs)
+
+    @dynamicmethod
+    def add_navigation_header(self, app, icon=""):
+        new_nav_header = self.NavHeader(app, icon)
         try:
-            old_header = NavView.AppNavigation[new_nav_header.label]
-            if not isinstance(old_header, cls.NavHeader):
-                old_header = cls.NavHeader(old_header)
+            old_header = self.AppNavigation[new_nav_header.label]
+            if not isinstance(old_header, self.NavHeader):
+                old_header = self.NavHeader(old_header)
             old_header.extend(new_nav_header)
         except KeyError:
-            NavView.AppNavigation[new_nav_header.label] = new_nav_header
+            self.AppNavigation[new_nav_header.label] = new_nav_header
 
-    @classmethod
-    def add_navigation(cls, url, label="", icon="", app="", url_args=None, url_kwargs=None):
+    @dynamicmethod
+    def add_navigation(self, url, label="", icon="", app="", url_args=None, url_kwargs=None):
         """Add a navigation item.
 
         Args:
@@ -208,58 +245,90 @@ class NavBarOptions(BaseNavOptions):
             url_args (tuple)[None]: Reverse url arguments.
             url_kwargs (dict)[None]: Reverse url key word arguments.
         """
-        nav_item = cls.NavItem(url, label, icon, url_args=url_args, url_kwargs=url_kwargs)
+        nav_item = self.NavItem(url, label, icon, url_args=url_args, url_kwargs=url_kwargs)
         if app:
             try:
-                NavView.AppNavigation[app].append(nav_item)
+                self.AppNavigation[app].append(nav_item)
             except:
-                NavView.AppNavigation[app] = NavView.NavHeader(app, "", nav_item)
+                self.AppNavigation[app] = self.NavHeader(app, "", nav_item)
         else:
             app = label
-            NavView.AppNavigation[app] = nav_item
+            self.AppNavigation[app] = nav_item
 
-    @classmethod
-    def get_app_navigation(cls):
-        return [(key, NavView.AppNavigation[key]) for key in NavView.AppNavigation]
+    @dynamicmethod
+    def get_app_navigation(self):
+        """Return a copy of the AppNavigation. Override this for custom navigation for view instances."""
+        return copy.deepcopy(self.AppNavigation)
 
-    @classmethod
-    def get_context(cls, request, nav_color=None, **kwargs):
+    @dynamicmethod
+    def get_context(self, request, nav_color=None, nav_items=None, **kwargs):
+        """Return the context for the Navigation Bar and Navigation sidebar options.
+
+        Args:
+            request:
+            nav_color (str): Navbar color.
+            nav_items (list/tuple): List of list/NavItems and NavHeaders
+            **kwargs:
+
+        Returns:
+            context(dict): View context
+        """
         context = super().get_context(request, **kwargs)
 
         if nav_color is None:
-            nav_color = cls.NavColor or "teal"
+            nav_color = self.NavColor or "teal"
         context["NavColor"] = nav_color
-        context['AppNavigation'] = cls.get_app_navigation()
+
+        if nav_items is not None:
+            for item in nav_items:
+                if isinstance(item, NavHeader) or len(item) == 1:
+                    self.add_navigation_header(*item)
+                else:
+                    self.add_navigation(*item)
+        context['AppNavigation'] = self.AppNavigation
 
         return context
 
 
 class SearchOptions(BaseNavOptions):
+    AppName = ""
     SearchURL = None
     _SearchURL_CACHE_ = None
     SearchModels = []
 
-    @classmethod
-    def add_search_model(cls, model):
+    def __init__(self, *args, app_name=None, search_url=None, search_models=None, **kwargs):
+        if app_name is not None:
+            self.AppName = app_name
+        if search_url is not None:
+            self.SearchURL = search_url
+        if search_models is not None:
+            self.SearchModels = search_models
+        else:
+            self.SearchModels = copy.deepcopy(self.__class__.SearchModels)
+
+        super().__init__(*args, **kwargs)
+
+    @dynamicmethod
+    def add_search_model(self, model):
         if isinstance(model, (list, tuple)):
             for m in model:
-                NavView.SearchModels.append(m)
+                self.SearchModels.append(m)
         else:
-            NavView.SearchModels.append(model)
+            self.SearchModels.append(model)
 
-    @classmethod
-    def get_search_models(cls):
-        return NavView.SearchModels
+    @dynamicmethod
+    def get_search_models(self):
+        return self.SearchModels
 
-    @classmethod
-    def get_context(cls, request, search_url=None, search_models=None, **kwargs):
+    @dynamicmethod
+    def get_context(self, request, search_url=None, search_models=None, **kwargs):
         context = super().get_context(request, **kwargs)
 
         # Search url
         if search_url is None:
-            search_url = cls._SearchURL_CACHE_
+            search_url = self._SearchURL_CACHE_
             if not search_url:
-                search_url = cls.SearchURL
+                search_url = self.SearchURL
                 try:
                     search_url = reverse(search_url)
                 except:
@@ -267,15 +336,15 @@ class SearchOptions(BaseNavOptions):
                         search_url = search_url.get_absolute_url()
                     except:
                         pass
-                cls._SearchURL_CACHE_ = search_url
+                self._SearchURL_CACHE_ = search_url
 
         if search_models is None:
-            search_models = cls.get_search_models()
+            search_models = self.get_search_models()
 
         # Search
         if search_url:
             try:
-                app_name = " " + cls.AppName
+                app_name = " " + self.AppName
             except AttributeError:
                 app_name = ""
             context["SearchURL"] = search_url
@@ -290,26 +359,38 @@ class SideBarOptions(SearchOptions):
     ShowSidebar = True
     FixedSidebar = True
     ContainerOn = True
-    SidePannel = False
+    SidePanel = False
 
-    @classmethod
-    def get_context(cls, request, context=None, show_sidebar=None, fixed_sidebar=None, container_on=None,
-                    side_pannel=None, **kwargs):
+    def __init__(self, *args, show_sidebar=None, fixed_sidebar=None, container_on=None, side_panel=None, **kwargs):
+        if show_sidebar is not None:
+            self.ShowSidebar = show_sidebar
+        if fixed_sidebar is not None:
+            self.FixedSidebar = fixed_sidebar
+        if container_on is not None:
+            self.ContainerOn = container_on
+        if side_panel is not None:
+            self.SidePanel = side_panel
+
+        super().__init__(*args, **kwargs)
+
+    @dynamicmethod
+    def get_context(self, request, context=None, show_sidebar=None, fixed_sidebar=None, container_on=None,
+                    side_panel=None, **kwargs):
         context = super().get_context(request, context=context, **kwargs)
 
         if show_sidebar is None:
-            show_sidebar = cls.ShowSidebar
+            show_sidebar = self.ShowSidebar
         if fixed_sidebar is None:
-            fixed_sidebar = cls.FixedSidebar
+            fixed_sidebar = self.FixedSidebar
         if container_on is None:
-            container_on = cls.ContainerOn
-        if side_pannel is None:
-            side_pannel = cls.SidePannel
+            container_on = self.ContainerOn
+        if side_panel is None:
+            side_panel = self.SidePanel
 
         context["ShowSidebar"] = show_sidebar
         context["FixedSidebar"] = fixed_sidebar
         context["ContainerOn"] = container_on
-        context["SidePannel"] = side_pannel
+        context["SidePanel"] = side_panel
 
         return context
 
@@ -333,20 +414,21 @@ class NavView(SideBarOptions, SearchOptions, NavBarOptions, TitleOptions, BaseNa
     ShowSidebar = True
     FixedSidebar = True
     ContainerOn = True
-    SidePannel = False
+    SidePanel = False
 
     SearchURL = None
     SearchModels = []
 
-    @classmethod
-    def get_context(cls, request, context=None, title=None, page_title=None, nav_color=None, show_sidebar=None,
-                    fixed_sidebar=None, container_on=None, side_pannel=None, search_url=None, search_models=None,
-                    notification=None, **kwargs):
-        return super().get_context(request, context=context,
-                                   title=title, page_title=page_title,
-                                   nav_color=nav_color,
+    @dynamicmethod
+    def get_context(self, request, context=None, title=None, page_title=None, show_page_title=None, home_url=None,
+                    nav_color=None, nav_items=None,
+                    show_sidebar=None, fixed_sidebar=None, container_on=None, side_panel=None, search_url=None,
+                    search_models=None, notification=None, **kwargs):
+        return super().get_context(request, context=context, title=title, page_title=page_title,
+                                   show_page_title=show_page_title, home_url=home_url,
+                                   nav_color=nav_color, nav_items=nav_items,
                                    show_sidebar=show_sidebar, fixed_sidebar=fixed_sidebar, container_on=container_on,
-                                   side_pannel=side_pannel,
+                                   side_panel=side_panel,
                                    search_url=search_url, search_models=search_models,
                                    notification=notification, **kwargs)
 
@@ -370,13 +452,13 @@ class SearchView(NavView):
     search_form = SearchForm
     paginate_by = 10
 
-    @classmethod
-    def add_search_model(cls, model):
-        return NavView.add_search_model(model)
+    @dynamicmethod
+    def add_search_model(self, model):
+        return self.add_search_model(model)
 
-    @classmethod
-    def get_search_models(cls):
-        return NavView.get_search_models()
+    @dynamicmethod
+    def get_search_models(self):
+        return self.get_search_models()
 
     def get_context_object_name(self):
         """Get the name of the item to be used in the context."""
