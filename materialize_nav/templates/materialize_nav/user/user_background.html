@@ -3,11 +3,11 @@
 
 <li><div class="user-view" style="display: block;">
     <div class="background" style="position: absolute; z-index: -1">
-        <img style="width: 300px;" src="{% if user.background_image %}{{ user.background_image.url }}{% else %}{{ default_background_image }}{% endif %}">
+        <img style="width: 300px;" src="{% if user.has_background_image %}{{ user.background_image.url }}{% else %}{{ default_background_image }}{% endif %}">
     </div>
 
     {% if user.is_authenticated %}
-        <a href=""><img class="circle" style="height: 64px;" src="{% if user.thumbnail %}{{ user.thumbnail.url }}{% else %}{{ default_user_image }}{% endif %}"></a>
+        <a href=""><img class="circle" style="height: 64px;" src="{% if user.has_thumbnail %}{{ user.thumbnail.url }}{% else %}{{ default_user_image }}{% endif %}"></a>
         <a href=""><span class="black-text name">{{ user.username }}</span></a>
         <a href=""><span class="black-text email">{{ user.email }}</span></a>
         <a href="{% url 'logout' %}"><span class="black-text name">Sign Out</span></a>

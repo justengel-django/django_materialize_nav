@@ -8,6 +8,7 @@ Settings to override:
     PROFILE_BACKGROUND_DEFAULT   = "accounts/default_background.png"  # Static file
 """
 import os
+from django.contrib.auth import get_user_model
 from django.db import models
 
 # Import the user model. This needs to be here after the settings are imported.
@@ -15,6 +16,8 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.files.storage import FileSystemStorage
 from django.contrib.staticfiles.templatetags.staticfiles import static
+
+from .utils import image_exists
 
 
 # ===== Additional settings =====
@@ -81,21 +84,31 @@ class OverwriteStorage(FileSystemStorage):
         return name
 
 
-if settings.AUTH_USER_MODEL == 'materialize_nav.User':
-    class User(AbstractUser):
-        """New user that has a thumbnail and background image."""
+class User(AbstractUser):
+    """New user that has a thumbnail and background image."""
 
-        thumbnail = models.ImageField(upload_to=get_thumbnail_save, storage=OverwriteStorage(), blank=True, null=True)
-        background_image = models.ImageField(upload_to=get_background_save, storage=OverwriteStorage(), blank=True, null=True)
+    thumbnail = models.ImageField(upload_to=get_thumbnail_save, storage=OverwriteStorage(), blank=True, null=True)
+    background_image = models.ImageField(upload_to=get_background_save, storage=OverwriteStorage(), blank=True, null=True)
 
-        @classmethod
-        def get_default_thumbnail(cls):
-            return static(settings.PROFILE_THUMBNAIL_DEFAULT)
+    def has_thumbnail(self):
+        try:
+            return image_exists(self.thumbnail.url)
+        except:
+            return False
 
-        @classmethod
-        def get_default_background_image(cls):
-            return static(settings.PROFILE_BACKGROUND_DEFAULT)
+    def has_background_image(self):
+        try:
+            return image_exists(self.background_image.url)
+        except:
+            return False
 
-        class Meta:
-            # Do not create the database table unless this is the User model (still causes migration issues at times)
-            managed = settings.AUTH_USER_MODEL == 'materialize_nav.User'
+    @classmethod
+    def get_default_thumbnail(cls):
+        return static(settings.PROFILE_THUMBNAIL_DEFAULT)
+
+    @classmethod
+    def get_default_background_image(cls):
+        return static(settings.PROFILE_BACKGROUND_DEFAULT)
+
+    class Meta(AbstractUser.Meta):
+        swappable = 'AUTH_USER_MODEL'

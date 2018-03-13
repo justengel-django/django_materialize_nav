@@ -7,8 +7,8 @@ __all__ = ["render_user_chip", "render_user_image", "render_user_background"]
 
 
 @register.inclusion_tag("materialize_nav/user/user_chip.html")
-def render_user_chip(user, default_user_image=None):
-    d = {"user": user}
+def render_user_chip(user, show_full_name=False, default_user_image=None):
+    d = {"user": user, "show_full_name": show_full_name}
 
     # User Image
     if default_user_image is None:
