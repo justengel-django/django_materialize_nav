@@ -7,7 +7,7 @@ import os
 
 import math
 
-__all__ = ["list_property", "NavHeader", "NavItem", 'SearchResult', 'nav_redirect', 'image_exists', 'get_star_type']
+__all__ = ["list_property", "NavHeader", "NavItem", 'SearchResult', 'nav_redirect', 'get_star_type']
 
 
 class list_property(property):
@@ -181,18 +181,6 @@ def nav_redirect(*args, get_params=None, **kwargs):
             params = urllib.urlencode(get_params)
         response["Location"] += "?%s" % params
     return response
-
-
-def image_exists(image_path):
-    """Return if an image or file exists."""
-    image_path = str(image_path)
-    try:
-        r = requests.get(image_path)
-        return r.status_code == 200
-    except:
-        if os.path.exists(image_path) or (os.path.exists("." + image_path) and os.path.isfile("." + image_path)):
-            return True
-        return False
 
 
 def get_star_type(index, ranking):
