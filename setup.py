@@ -9,7 +9,7 @@ See Also:
 import os
 import glob
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 import uuid
 from pip.req import parse_requirements
@@ -34,10 +34,10 @@ if __name__ == "__main__":
 
     setup(
         name="django_materialize_nav",
-        version="0.2.0",
+        version="0.2.1",
         description="Django materialize css support with some helpful navigation tools.",
         url="https://github.com/HashSplat/django_materialize_nav",
-        download_url="https://github.com/HashSplat/django_materialize_nav/archive/v0.2.0.tar.gz",
+        download_url="https://github.com/HashSplat/django_materialize_nav/archive/v0.2.1.tar.gz",
 
         author="Justin Engel",
         author_email="jengel@sealandaire.com",
@@ -52,7 +52,8 @@ if __name__ == "__main__":
         scripts=[],
 
         long_description=read("README.md"),
-        packages=["materialize_nav"],
+        packages=["materialize_nav", "materialize_nav/autocomplete", "materialize_nav/navigation",
+                  "materialize_nav/search", "materialize_nav/star_rating"],
         install_requires=requirements,
 
         include_package_data=True,
