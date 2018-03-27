@@ -5,15 +5,16 @@
 
     <div class="row">
         {% for item in search_results %}
-            <div class="col s12 m6 l6">
-            <div class="card small">
+            <div class="col s12 m6 l4">
+            <div class="card small hoverable">
             <div class="card-content" style="overflow-y: auto;">
                 <div class="section">
-                    <h4 style="display:inline; margin-left: 1.5rem;">Search: {{ item.model|title }}</h4>
+                    <h4 style="display:inline; margin-left: 1.5rem;"><i class="material-icons" style="font-size: 3rem; vertical-align: middle;">search</i> Search: {{ item.model|title }}</h4>
                     <div class="divider"></div>
                 </div>
 
                 <h6><b>Searched for: </b>{{ item.search_text }}</h6>
+                <h6><b>Searched with:</b> {{ item.search_params }}</h6>
                 <ul class="collection">
                     {% for result in item.results %}
                         <li class="collection-item">

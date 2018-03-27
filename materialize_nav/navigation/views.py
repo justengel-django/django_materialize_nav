@@ -6,11 +6,10 @@ from .utils import NavHeader, NavItem
 from .template_mixin import TemplateMixin
 
 from . import nav_option_views
-from ..search.nav_option_views import SearchOptions
 
 
 __all__ = ['TemplateMixin', 'NavHeader', 'NavItem', 'TitleViewMetaclass', 'BaseNavOptions', 'TitleOptions',
-           'NavBarOptions', 'SideBarOptions', 'SearchOptions', 'NavView']
+           'NavBarOptions', 'SideBarOptions', 'BaseNavView']
 
 
 BaseNavOptions = nav_option_views.BaseNavOptions
@@ -63,19 +62,19 @@ class TitleViewMetaclass(type):
             except:
                 pass
 
-        if "SearchModels" in dct and dct["SearchModels"]:
+        if "SearchItems" in dct and dct["SearchItems"]:
             try:
-                for model in dct["SearchModels"]:
-                    cls.BASE_NAV_VIEW.SearchModels.append(model)
+                for model in dct["SearchItems"]:
+                    cls.BASE_NAV_VIEW.SearchItems.append(model)
             except (NameError, TypeError):
                 try:
-                    cls.BASE_NAV_VIEW.SearchModels.append(dct["SearchModels"])
+                    cls.BASE_NAV_VIEW.SearchItems.append(dct["SearchItems"])
                 except (NameError, TypeError):
                     pass
 
 
-class NavView(SideBarOptions, SearchOptions, NavBarOptions, TitleOptions, BaseNavOptions, TemplateMixin,
-              metaclass=TitleViewMetaclass):
+class BaseNavView(SideBarOptions, NavBarOptions, TitleOptions, BaseNavOptions, TemplateMixin,
+                  metaclass=TitleViewMetaclass):
     """Standard view for navigation items and other view defaults."""
 
     AppName = ""
@@ -95,21 +94,17 @@ class NavView(SideBarOptions, SearchOptions, NavBarOptions, TitleOptions, BaseNa
     ContainerOn = True
     SidePanel = False
 
-    SearchURL = None
-    SearchModels = []
-
     @dynamicmethod
     def get_context(self, request, context=None, title=None, page_title=None, show_page_title=None, home_url=None,
                     nav_color=None, nav_items=None,
-                    show_sidebar=None, fixed_sidebar=None, container_on=None, side_panel=None, search_url=None,
-                    search_models=None, notification=None, **kwargs):
+                    show_sidebar=None, fixed_sidebar=None, container_on=None, side_panel=None,
+                    notification=None, **kwargs):
         return super().get_context(request, context=context, title=title, page_title=page_title,
                                    show_page_title=show_page_title, home_url=home_url,
                                    nav_color=nav_color, nav_items=nav_items,
                                    show_sidebar=show_sidebar, fixed_sidebar=fixed_sidebar, container_on=container_on,
                                    side_panel=side_panel,
-                                   search_url=search_url, search_models=search_models,
                                    notification=notification, **kwargs)
 
 
-TitleViewMetaclass.BASE_NAV_VIEW = NavView
+TitleViewMetaclass.BASE_NAV_VIEW = BaseNavView

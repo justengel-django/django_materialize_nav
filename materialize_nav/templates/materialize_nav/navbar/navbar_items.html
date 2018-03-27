@@ -17,7 +17,7 @@
 
 
 <!-- ========== User Nav Header ========== -->
-<ul class="right show-on-median hide-on-small-and-down hide-on-large-only">
+<ul class="right show-on-median{% if not FixedSidebar  %}-and-up{% endif %} hide-on-small-and-down">
     <!-- User Navigation -->
     {% if user.is_authenticated %}
         <li><a id="nav_dropdown_trig_user" style="max-height: 64px;" class="dropdown-trigger" data-target="nav_dropdown_user">

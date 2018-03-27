@@ -11,7 +11,7 @@ __all__ = ["paginate_query", "render_pagination"]
 def paginate_query(context, queryset, context_object_name, paginate_by, page_kwarg="page",
                    allow_empty=True, paginate_orphans=0, paginator_class=Paginator):
     paginator = paginator_class(queryset, paginate_by, orphans=paginate_orphans, allow_empty_first_page=allow_empty)
-    page = context["request"].GET.get(page_kwarg) or 1
+    page = context["request"].GET.get(page_kwarg, 1) or 1
     try:
         page_number = int(page)
     except ValueError:

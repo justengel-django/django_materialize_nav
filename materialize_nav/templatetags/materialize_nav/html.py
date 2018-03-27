@@ -13,9 +13,10 @@ def show_stars(ranking, num_stars=5, color="yellow"):
 
 
 @register.inclusion_tag("materialize_nav/html/materialize_header.html")
-def include_materialize_header(icons=True, jquery=True, materializecss=True, style=True, stars=True, favicon=True,
-                               ajax_helper=True):
-    return {"icons": icons, "jquery": jquery, "materializecss": materializecss, "style": style, "stars": stars,
+def include_materialize_header(icons=True, jquery=True, materializecss=True, style=True, stars=True,
+                               favicon=True, ajax_helper=True):
+    return {"icons": icons, "jquery": jquery, "materializecss": materializecss, "style": style,
+            "stars": stars,
             "favicon": favicon, "ajax_helper": ajax_helper}
 
 

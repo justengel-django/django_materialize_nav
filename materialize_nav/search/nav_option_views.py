@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.urls import reverse
 from dynamicmethod import dynamicmethod
 
+from .utils import SearchItem
 from .forms import SearchForm
 
 from ..navigation.base_nav_options import BaseNavOptions
@@ -15,7 +16,7 @@ class SearchOptions(BaseNavOptions):
     AppName = ""
     SearchURL = None
     _SearchURL_CACHE_ = None
-    SearchModels = []
+    SearchItems = []
 
     def __init__(self, *args, app_name=None, search_url=None, search_models=None, **kwargs):
         if app_name is not None:
@@ -23,23 +24,31 @@ class SearchOptions(BaseNavOptions):
         if search_url is not None:
             self.SearchURL = search_url
         if search_models is not None:
-            self.SearchModels = search_models
+            self.SearchItems = search_models
         else:
-            self.SearchModels = copy.deepcopy(self.__class__.SearchModels)
+            self.SearchItems = copy.deepcopy(self.__class__.SearchItems)
 
         super().__init__(*args, **kwargs)
 
     @dynamicmethod
-    def add_search_model(self, model):
-        if isinstance(model, (list, tuple)):
-            for m in model:
-                self.SearchModels.append(m)
-        else:
-            self.SearchModels.append(model)
+    def add_search_model(self, model, lookup_expr, **lookup_kwargs):
+        """Add a model and lookup expression to search with. The lookup expression can be a Q or a list of strings to
+        be or'ed together.
+        
+        Args:
+            model (django.db.model): Model to search.
+            lookup_expr (str/list): lookup expression or list of lookup expressions
+            **lookup_kwargs (dict): Dictionary of lookups that are and'ed with the lookup_expr
+        """
+        self.SearchItems.append(SearchItem(model, lookup_expr, lookup_kwargs))
+
+    @dynamicmethod
+    def get_search_items(self):
+        return [item for item in self.SearchItems]
 
     @dynamicmethod
     def get_search_models(self):
-        return self.SearchModels
+        return [item.model for item in self.SearchItems]
 
     @dynamicmethod
     def get_context(self, request, search_url=None, search_models=None, **kwargs):
