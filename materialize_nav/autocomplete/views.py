@@ -1,3 +1,4 @@
+import collections
 from django.db.models import Q
 from django.http import JsonResponse
 
@@ -9,7 +10,7 @@ __all__ = ['AutocompleteView']
 
 class AutocompleteView(TemplateMixin):
     model = None
-    query_name = "query"
+    query_name = "q"
     lookup_expr = "name__istartswith"  # ['name__icontains', 'description__icontains']
 
     def get_queryset(self):
@@ -22,25 +23,27 @@ class AutocompleteView(TemplateMixin):
             return self.lookup_expr
         return [self.lookup_expr]
 
-    def filter_queryset(self, qs, filt):
+    def filter_queryset(self, qs, q):
         """Filter and return the new queryset.
 
         Args:
             qs (QuerySet): Queryset that needs to be filtered.
-            filt (str): Filter parameter that was passed to this view.
+            q (str): Query value that was the query_name GET parameter
 
         Returns:
             qs (QuerySet): The filtered queryset to use.
         """
-        q = Q()
-        for lookup in self.get_lookup_expr():
-            q = q | Q(**{lookup: filt})
-        qs = qs.filter(q)
+        if q:
+            query = Q()
+            for lookup in self.get_lookup_expr():
+                query = query | Q(**{lookup: q})
+            qs = qs.filter(query)
         return qs
 
     def get(self, request, *args, **kwargs):
         qs = self.get_queryset()
-        filt = request.GET.get(self.query_name, None)
-        if filt:
-            qs = self.filter_queryset(qs, filt)
-        return JsonResponse(qs, status=200)
+        q = request.GET.get(self.query_name, None)
+        if q:
+            qs = self.filter_queryset(qs, q)
+        data = collections.OrderedDict([(obj.id, str(obj)) for obj in qs])
+        return JsonResponse(data, status=200)

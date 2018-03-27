@@ -1,3 +1,5 @@
+import json
+import collections
 from django.forms import widgets
 from django.urls import reverse
 
@@ -11,11 +13,12 @@ class AutocompleteWidget(widgets.ChoiceWidget):
     class Media:
         js = ('materialize_nav/autocomplete.js',)
 
-    def __init__(self, queryset=(), url=None, url_args=(), url_kwargs=None, attrs=None):
+    def __init__(self, queryset=(), url=None, url_args=(), url_kwargs=None, query_name="q", attrs=None):
         self.queryset = queryset
         self.url = url
         self.url_args = url_args
         self.url_kwargs = url_kwargs
+        self.query_name = query_name
         super().__init__(attrs=attrs)
 
     def get_url(self):
@@ -34,6 +37,10 @@ class AutocompleteWidget(widgets.ChoiceWidget):
         context = super().get_context(name, value, attrs)
         context['widget']['url'] = self.get_url()
         context['widget']['data'] = [(item.id, str(item)) for item in self.queryset]
+        if self.query_name:
+            context['widget']['query_name'] = str(self.query_name)
+        if self.queryset:
+            context['widget']['options'] = json.dumps(collections.OrderedDict([(val.id, str(val)) for val in self.queryset]))
         return context
 
     def render(self, name, value, attrs=None, renderer=None):
