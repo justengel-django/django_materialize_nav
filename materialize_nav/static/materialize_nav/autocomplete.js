@@ -1,4 +1,15 @@
 autocomplete_objs = {};
+_delay_input_tmr = 0;
+
+
+function delay_input(ms, callback){
+    try{
+        clearTimeout(_delay_input_tmr);
+    }catch (e) {
+    }
+
+    _delay_input_tmr = setTimeout(callback, ms);
+}
 
 
 function get_auto_data(id){
@@ -48,47 +59,43 @@ function populate_autocomplete(id, json){
             var val_id = key;
             autocomplete_li[name] = null;
             autocomplete_data[name] = val_id;
-
-            set_auto_field(id, 'auto_data', autocomplete_data);
-            set_auto_field(id, 'auto_data_li', autocomplete_li);
-            try{
-                get_auto_field(id, 'auto_inst').updateData(autocomplete_li);
-            }catch (exc){
-            }
         }
+    }
+
+    set_auto_field(id, 'auto_data', autocomplete_data);
+    set_auto_field(id, 'auto_data_li', autocomplete_li);
+    try{
+        get_auto_field(id, 'auto_inst').updateData(autocomplete_li);
+    }catch (exc){
     }
 }
 
 
 function request_autocomplete(id, url, query_name, search_text) {
-    var search_req = null;
-    try{
-        get_auto_field(id, 'search_request').abort();
-    }catch (exc){
-    }
-
-    try{
-        search_text = typeof search_text === 'undefined' ? $(id).val() : search_text;
-    }catch (exc){
-    }
-
-    // Get the search query
-    var data = {};
-    if(typeof query_name !== "undefined" && query_name != null &&
-        typeof search_text !== 'undefined' && search_text != null && search_text !== ''){
-        data[query_name] = search_text;
-    }
-
-    // perform the ajax request and populate the autocomplete data with the successfully returned information.
-    search_req = $.ajax({
-        type: "GET",
-        url: url,
-        dataType: 'json',
-        data: data,
-
-        success: function (json) {
-            populate_autocomplete(id, json);
+    delay_input(500, function(){
+        try{
+            search_text = typeof search_text === 'undefined' ? $(id).val() : search_text;
+        }catch (exc){
         }
+
+        // Get the search query
+        var data = {};
+        if(typeof query_name !== "undefined" && query_name != null &&
+            typeof search_text !== 'undefined' && search_text != null && search_text !== ''){
+            data[query_name] = search_text;
+        }
+
+        // perform the ajax request and populate the autocomplete data with the successfully returned information.
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: 'json',
+            data: data,
+
+            success: function (json) {
+                populate_autocomplete(id, json);
+            }
+        });
+
     });
-    set_auto_field(id, 'search_request', search_req);
 }

@@ -6,7 +6,7 @@ from django.urls import reverse
 __all__ = ['AutocompleteWidget']
 
 
-class AutocompleteWidget(widgets.ChoiceWidget):
+class AutocompleteWidget(widgets.Select):
     input_type = 'select'
     template_name = 'materialize_nav/forms/widgets/autocomplete.html'
 
@@ -37,13 +37,14 @@ class AutocompleteWidget(widgets.ChoiceWidget):
         context = super().get_context(name, value, attrs)
         context['widget']['url'] = self.get_url()
         context['widget']['data'] = [(item.id, str(item)) for item in self.queryset]
+        context['widget']['has_div'] = getattr(self, "has_div", False)
         if self.query_name:
             context['widget']['query_name'] = str(self.query_name)
         if self.queryset:
             context['widget']['options'] = json.dumps(collections.OrderedDict([(val.id, str(val)) for val in self.queryset]))
         return context
 
-    def render(self, name, value, attrs=None, renderer=None):
-        """Render the widget as an HTML string."""
-        context = self.get_context(name, value, attrs)
-        return self._render(self.template_name, context, renderer)
+    # def render(self, name, value, attrs=None, renderer=None):
+    #     """Render the widget as an HTML string."""
+    #     context = self.get_context(name, value, attrs)
+    #     return self._render(self.template_name, context, renderer)
