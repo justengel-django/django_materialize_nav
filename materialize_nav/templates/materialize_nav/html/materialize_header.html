@@ -10,11 +10,12 @@
 {% endif %}
 
 {% if materializecss %}
-    {# <!--Import materialize.css--> #}
-    <link type="text/css" rel="stylesheet" href="{% static '/materialize/css/materialize.min.css' %}" media="screen"/>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
 
-    {# <!--JavaScript at end of body for optimized loading--> #}
-    <script src="{% static '/materialize/js/materialize.min.js' %}"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+
 {% endif %}
 
 {% if stars %}
@@ -34,4 +35,9 @@
 {% if ajax_helper %}
     {# <!-- Django quick ajax support --> #}
     <script src="{% static 'materialize_nav/ajax_helper.js' %}"></script>
+{% endif %}
+
+{% if autocomplete %}
+    {# <!-- Django quick ajax support --> #}
+    <script src="{% static 'materialize_nav/autocomplete.js' %}"></script>
 {% endif %}

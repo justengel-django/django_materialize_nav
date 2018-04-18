@@ -6,13 +6,13 @@
         {% if previous_page %}
             <a style="float: left;" href="{{ previous_page }}" class="tooltipped" data-tooltip="Previous Page"><i class="material-icons">keyboard_backspace</i></a>
         {% endif %}
-        <h4 style="display:inline; margin-left: 1.5rem;">Login</h4>
+        <h4 class="section-title">Login</h4>
         <div class="divider"></div>
     </div>
 
-    <form method="post">
+    <form action='' method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form }}
         <button type="submit" class="waves-effect waves-light btn">Login</button>
     </form>
 {% endblock %}

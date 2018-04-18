@@ -31,6 +31,7 @@ def paginate_query(context, queryset, context_object_name, paginate_by, page_kwa
             'page_number': page_number,
             'message': str(e)
         })
+    return ""
 
 
 def get_pagination_class(idx, page_num):

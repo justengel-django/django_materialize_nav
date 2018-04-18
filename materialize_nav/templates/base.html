@@ -26,7 +26,7 @@
     <main {% if ShowSidebar and FixedSidebar %}class="show_fixed_sidebar"{% endif %}>
         {% block main %}
         <div class="row">
-            <div class="{% if not ContainerOn %}no-{% endif %}container" style="margin-top: 1rem">
+            <div id='main_content' class="{% if not ContainerOn %}no-{% endif %}container" style="margin-top: 1rem">
                 {% block content %}
                         <div class="col s12{% if SidePanel %} m9 l9 xl10{% endif %}">
                         {% block container %}
@@ -40,14 +40,24 @@
                 {% endblock content %}
             </div>
             {% if SidePanel %}
-            <div class="hide-on-small-only col m3 l3 xl2">
+            <div id='right_side_panel' class="hide-on-small-only col s12 m3 l3 xl2" style="margin-left: 0">
                 {% block side_panel %}
-                    <div class="card">
-                        <div class="card-content">
+                    <div class="card" style="margin-left: 0;">
+                        <div class="card-content" style="padding-left: 16px; padding-right: 16px;">
                             {% block side_card %}{% endblock side_card %}
                         </div>
                     </div>
                 {% endblock side_panel %}
+            </div>
+            <div id='right_side_panel_mobil_actions' class='fixed-action-btn .no-autoinit show-on-small-only'>
+                <a class="btn-floating btn-large">
+                  <i class="large material-icons">more_vert</i> <!-- layers more_vert more_horiz -->
+                </a>
+                <ul>
+                {% block side_panel_action %}
+                    <li><a class='btn-floating waves-effect waves-light' onclick="toggle_side_panel()"><i class="material-icons">flip</i></a></li>
+                {% endblock side_panel_action %}
+                </ul>
             </div>
             {% endif %}
         </div>
@@ -69,24 +79,64 @@
                 $('.container').toggleClass('container had-container');
                 $('.card.hoverable').toggleClass('hoverable had-hoverable');
                 $('.card').toggleClass('card had-card');
+                $('#right_side_panel_mobil_actions').css('display', 'block');
             } else {
                 $('.had-container').toggleClass('had-container container');
                 $('.had-card.had-hoverable').toggleClass('had-hoverable hoverable');
                 $('.had-card').toggleClass('had-card card');
+                $('#right_side_panel_mobil_actions').css('display', 'none');
             }
         }
 
-        $(window).on('load', function(){
-            $('.tooltipped').tooltip();  // Jquery initialize materializecss tooltips
-            $('select').select();  // Jquery initialize select input dropdown
+        function toggle_side_panel(){
+            if ($('#main_content').css('display') == 'none'){
+                // Show main content
+                $('#main_content').animate({'opacity': 1}, 300, function(){
+                    $('#main_content').css('display', 'block');
+                    $('#right_side_panel')
+                        .css('display', '')
+                        .css('padding', '')
+                        .toggleClass('hide-on-small-only had-hide-on-small-only');
+                });
+            } else {
+                // hide main content
+                $('#main_content').animate({'opacity': 0}, 300, function(){
+                    $('#main_content').css('display', 'none');
+                    $('#right_side_panel')
+                        .css('display', 'block')
+                        .css('padding', '1rem')
+                        .toggleClass('hide-on-small-only had-hide-on-small-only');
+                });
+            }
+        }
 
+        // Setup containers and cards for small screens
+        check_size_for_container();
+
+        $(window).on('load', function(){
             {% block js_document_ready %}{% endblock %}
 
-            // Setup containers and cards for small screens
-            check_size_for_container()
+            // Auto initialize all materialize css items
+            try {
+                M.AutoInit();
+            } catch (e) {
+            }
+
+            // action button
+            var elem = document.querySelector('.fixed-action-btn');
+            var instance = M.FloatingActionButton.init(elem, {
+              hoverEnabled: false
+            });
+
 
             // Activate page notification
-            {% if notification %}M.toast({"html": "{{ notification }}" });{% endif %}
+            {% if notification %}
+                M.toast({
+                    "html": "{{ notification }}",
+                    "classes": "{{ notification_classes }}",
+                    {% if notification_time %}'displayLength': {{ notification_time }},{% endif %}
+                });
+            {% endif %}
         });
 
         // Resize event for containers and cards on small screens

@@ -9,7 +9,7 @@
             <div class="card small hoverable">
             <div class="card-content" style="overflow-y: auto;">
                 <div class="section">
-                    <h4 style="display:inline; margin-left: 1.5rem;"><i class="material-icons" style="font-size: 3rem; vertical-align: middle;">search</i> Search: {{ item.model|title }}</h4>
+                    <h4 class="section-title"><i class="material-icons" style="font-size: 3rem; vertical-align: middle;">search</i> Search: {{ item.model|title }}</h4>
                     <div class="divider"></div>
                 </div>
 
@@ -36,7 +36,7 @@
                     {% if previous_page %}
                         <a style="float: left;" href="{{ previous_page }}" class="tooltipped" data-tooltip="Previous Page"><i class="material-icons">keyboard_backspace</i></a>
                     {% endif %}
-                    <h4 style="display:inline; margin-left: 1.5rem;">Search Error</h4>
+                    <h4 class="section-title">Search Error</h4>
                     <div class="divider"></div>
                 </div>
 

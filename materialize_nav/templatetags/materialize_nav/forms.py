@@ -44,25 +44,36 @@ def render_filter(filt):
 from django.forms import TypedChoiceField
 
 @register.inclusion_tag("materialize_nav/forms/render_form_field.html")
-def render_form_field(field, label=None, input_type=None, is_hidden=None, inline=False, style="", input_class="",):
+def render_form_field(field, label=None, input_type=None, is_hidden=None, inline=False, div_class=None, div_style=None):
     """Render form field. Should move to crispy forms someday."""
-    if label is not None:
+    if label:
         field.label = label
-    if input_type is None:
-        try:
-            input_type = field.field.widget.input_type
-        except AttributeError:
-            type_ = str(field.field.widget).lower()
-            if isinstance(field.field.widget, TypedChoiceField):
-                input_type = "autocomplete"
-            elif "select" in type_:
-                input_type = "select"
-            elif "textarea" in type_:
-                input_type = "textarea"
-            else:
-                input_type = "checkbox"
-    if is_hidden is None:
-        is_hidden = field.is_hidden
 
-    return {"field": field, "input_type": input_type, "is_hidden": is_hidden,
-            "inline": inline, "style": style, "input_class": input_class, "widget": field.field.widget}
+    if input_type:
+        field.field.widget.input_type = input_type
+
+    if is_hidden:
+        field.field.widget.input_type = "hidden"
+
+    if inline:
+        field.div_style = "display: inline-block; min-width: 200px;"
+
+    if div_class:
+        field.div_class = div_class
+
+    if div_style:
+        try:
+            field.div_style += div_style
+        except AttributeError:
+            field.div_style = div_style
+
+    if field.errors:
+        try:
+            field.field.widget.attrs["class"] += " active validate invalid"
+        except:
+            field.field.widget.attrs["class"] = "active validate invalid"
+
+    # Set the has_div flag, because this method will give it a div wrapper
+    field.field.widget.attrs["has_div"] = True
+
+    return {"field": field, "widget": field.field.widget}

@@ -20,7 +20,7 @@
 <ul class="right show-on-median{% if not FixedSidebar  %}-and-up{% endif %} hide-on-small-and-down">
     <!-- User Navigation -->
     {% if user.is_authenticated %}
-        <li><a id="nav_dropdown_trig_user" style="max-height: 64px;" class="dropdown-trigger" data-target="nav_dropdown_user">
+        <li><a id="nav_dropdown_trig_user" style="max-height: 64px;" class="dropdown-trigger .no-autoinit" data-target="nav_dropdown_user">
             {% render_user_image user style="max-height: 64px; float: left;" class_names="circular center" %}
             {{ user.username }}
             <i class="material-icons right">arrow_drop_down</i></a></li>
@@ -39,7 +39,7 @@
     $(document).ready(function() {
         // Init search filter dropdown
         var nav_dropdown_trig_el = document.querySelector('#nav_dropdown_trig_user');
-        var nav_dropdown_trig_inst = M.Dropdown.init(nav_dropdown_trig_el, {
+        M.Dropdown.init(nav_dropdown_trig_el, {
             coverTrigger: false, constrainWidth: true, closeOnClick: false
         });
     });

@@ -14,10 +14,10 @@ def show_stars(ranking, num_stars=5, color="yellow"):
 
 @register.inclusion_tag("materialize_nav/html/materialize_header.html")
 def include_materialize_header(icons=True, jquery=True, materializecss=True, style=True, stars=True,
-                               favicon=True, ajax_helper=True):
+                               favicon=True, ajax_helper=True, autocomplete=True):
     return {"icons": icons, "jquery": jquery, "materializecss": materializecss, "style": style,
             "stars": stars,
-            "favicon": favicon, "ajax_helper": ajax_helper}
+            "favicon": favicon, "ajax_helper": ajax_helper, "autocomplete": autocomplete}
 
 
 @register.inclusion_tag("materialize_nav/html/link_item.html")
@@ -98,3 +98,11 @@ def replace(text, replace_with):
     for rep_with in replace_with:
         text = text.replace(rep, rep_with)
     return text
+
+
+@register.filter(name="range")
+def make_range(start, stop=None, step=1):
+    if stop is None:
+        stop = start
+        start = 0
+    return range(start, stop, step)
