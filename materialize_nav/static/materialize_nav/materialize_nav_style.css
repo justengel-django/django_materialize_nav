@@ -38,6 +38,11 @@ a > i{
     display: inline;
 }
 
+.section-title{
+    display: contents;
+    white-space: nowrap;
+}
+
 .pagination li.active {
     background-color: #009688;
 }
