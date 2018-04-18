@@ -18,7 +18,7 @@ class SearchNavView(SearchOptions, BaseNavView):
                     nav_color=None, nav_items=None,
                     show_sidebar=None, fixed_sidebar=None, container_on=None, side_panel=None,
                     search_url=None, search_items=None,
-                    notification=None, **kwargs):
+                    notification=None, notification_classes=None, notification_time=None, **kwargs):
 
         return super().get_context(request, context=context, title=title, page_title=page_title,
                                    show_page_title=show_page_title, home_url=home_url,
@@ -26,7 +26,8 @@ class SearchNavView(SearchOptions, BaseNavView):
                                    show_sidebar=show_sidebar, fixed_sidebar=fixed_sidebar, container_on=container_on,
                                    side_panel=side_panel,
                                    search_url=search_url, search_items=search_items,
-                                   notification=notification, **kwargs)
+                                   notification=notification, notification_classes=notification_classes,
+                                   notification_time=notification_time, **kwargs)
 
 
 class SearchView(SearchNavView):
