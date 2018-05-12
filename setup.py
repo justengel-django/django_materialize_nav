@@ -34,10 +34,10 @@ if __name__ == "__main__":
 
     setup(
         name="django_materialize_nav",
-        version="0.2.1",
+        version="0.2.2",
         description="Django materialize css support with some helpful navigation tools.",
-        url="https://github.com/HashSplat/django_materialize_nav",
-        download_url="https://github.com/HashSplat/django_materialize_nav/archive/v0.2.1.tar.gz",
+        url="https://github.com/justengel/django_materialize_nav",
+        download_url="https://github.com/justengel/django_materialize_nav/archive/v0.2.2.tar.gz",
 
         author="Justin Engel",
         author_email="jengel@sealandaire.com",
