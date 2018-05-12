@@ -21,17 +21,32 @@ def read(fname):
         return file.read()
 
 
-if __name__ == "__main__":
-    # ===== Requirements =====
-    try:
-        requirements_file = "requirements.txt"
-        requirements = [str(ir.req)
-                        for ir in parse_requirements(requirements_file, session=uuid.uuid1())
-                        if ir.req is not None]
-    except FileNotFoundError:
-        requirements = []
-    # ===== END Requirements =====
+# ========== Requirements ==========
+def check_options(line, options):
+    if line.startswith('--'):
+        opt, value = line.split(' ')
+        opt = opt.strip()
+        value = value.strip()
+        try:
+            options[opt].append(value)
+        except KeyError:
+            options[opt] = [value]
+        return True
 
+
+def parse_requirements(filename, options=None):
+    """load requirements from a pip requirements file """
+    if options is None:
+        options = {}
+    lineiter = (line.strip() for line in open(filename))
+    return [line for line in lineiter if line and not line.startswith("#") and not check_options(line, options)]
+
+
+requirements = parse_requirements('requirements.txt')
+# ========== END Requirements ==========
+
+
+if __name__ == "__main__":
     setup(
         name="django_materialize_nav",
         version="0.2.2",
