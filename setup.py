@@ -8,89 +8,89 @@ See Also:
 """
 import os
 import glob
-from setuptools import setup
+import sys
+from setuptools import setup, Extension, find_packages
 
 
 def read(fname):
     """Read in a file"""
-    with open(os.path.join(os.path.dirname(__file__), fname), "r") as file:
+    with open(os.path.join(os.path.dirname(__file__), fname), 'r') as file:
         return file.read()
 
 
-# ========== Requirements ==========
-def check_options(line, options):
-    if line.startswith('--'):
-        opt, value = line.split(' ')
-        opt = opt.strip()
-        value = value.strip()
-        try:
-            options[opt].append(value)
-        except KeyError:
-            options[opt] = [value]
-        return True
-
-
-def parse_requirements(filename, options=None):
-    """load requirements from a pip requirements file """
-    if options is None:
-        options = {}
-    lineiter = (line.strip() for line in open(filename))
-    return [line for line in lineiter if line and not line.startswith("#") and not check_options(line, options)]
-
-
-requirements = parse_requirements('requirements.txt')
-# ========== END Requirements ==========
+def get_meta(filename):
+    """Return the metadata dictionary from the given filename."""
+    with open(filename, 'r') as f:
+        meta = {}
+        exec(compile(f.read(), filename, 'exec'), meta)
+        return meta
 
 
 if __name__ == "__main__":
-    setup(
-        name="django_materialize_nav",
-        version="0.2.3",
-        description="Django materialize css support with some helpful navigation tools.",
-        url="https://github.com/justengel/django_materialize_nav",
-        download_url="https://github.com/justengel/django_materialize_nav/archive/v0.2.3.tar.gz",
+    # Variables
+    meta = get_meta('materialize_nav/__version__.py')
+    name = meta['name']
+    version = meta['version']
+    description = meta['description']
+    url = meta['url']
+    author = meta['author']
+    author_email = meta['author_email']
+    keywords = 'Django Materialize CSS'
+    packages = find_packages(exclude=('MaterializeNavSite', 'MaterializeNavSite/settings',
+                                      'demo', 'demo/migrations'))
 
-        author="Justin Engel",
-        author_email="jengel@sealandaire.com",
+    # Extensions
+    extensions = []
+    # module1 = Extension('libname',
+    #                     # define_macros=[('MAJOR_VERSION', '1')],
+    #                     # extra_compile_args=['-std=c99'],
+    #                     sources=['file.c', 'dir/file.c'],
+    #                     include_dirs=['./dir'])
+    # extensions.append(module1)
 
-        license="",
+    setup(name=name,
+          version=version,
+          description=description,
+          long_description=read('README.md'),
+          keywords=keywords,
+          url=url,
+          download_url=''.join((url, '/archive/v', version, '.tar.gz')),
 
-        platforms="any",
-        classifiers=["Programming Language :: Python",
-                     "Programming Language :: Python :: 3",
-                     "Operating System :: OS Independent"],
+          author=author,
+          author_email=author_email,
 
-        scripts=[],
+          license='Proprietary',
+          platforms='any',
+          classifiers=['Programming Language :: Python',
+                       'Programming Language :: Python :: 3',
+                       'Operating System :: OS Independent',
+                       'Framework :: Django :: 2.0',
+                       'License :: OSI Approved :: MIT License'],
 
-        long_description=read("README.md"),
-        packages=["materialize_nav", "materialize_nav/autocomplete", "materialize_nav/navigation",
-                  "materialize_nav/search", "materialize_nav/star_rating"],
-        install_requires=requirements,
+          scripts=[file for file in glob.iglob('bin/*.py')],  # Run with python -m Scripts.module args
 
-        include_package_data=True,
+          ext_modules=extensions,  # C extensions
+          packages=packages,
+          include_package_data=True,
+          # package_data={
+          #     'package': []
+          #     },
 
-        # package_data={
-        #     'package': ['file.dat']
-        # }
+          # Data files outside of packages
+          # data_files=[('my_data', ['data/my_data.dat'])],
 
-        # options to install extra requirements
-        # extras_require={
-        #     'dev': [],
-        #     'test': ['converage'],
-        # }
+          # options to install extra requirements
+          install_requires=[
+              ],
+          extras_require={
+              },
 
-        # Data files outside of packages
-        # data_files=[('my_data', ["data/my_data.dat"])],
-
-        # keywords='sample setuptools development'
-
-        # entry_points={
-        #     'console_scripts': [
-        #         'foo = my_package.some_module:main_func',
-        #         'bar = other_module:some_func',
-        #     ],
-        #     'gui_scripts': [
-        #         'baz = my_package_gui:start_func',
-        #     ]
-        # }
-    )
+          # entry_points={
+          #     'console_scripts': [
+          #         'plot_csv=bin.plot_csv:plot_csv',
+          #         ],
+          #     'gui_scripts': [
+          #         'baz = my_package_gui:start_func',
+          #         ]
+          #     }
+          )
