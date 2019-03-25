@@ -1,7 +1,16 @@
-from .navigation.utils import list_property, NavHeader, NavItem, nav_redirect
-from .search.utils import SearchResult
-from .star_rating.utils import get_star_type
+from django.forms.utils import flatatt
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 
-__all__ = ["list_property", "NavHeader", "NavItem", 'nav_redirect', 'SearchResult', 'get_star_type']
+def render_tag(tag, inner_html=None, end_tag=True, **attrs):
+    if inner_html is None:
+        inner_html = ''
+
+    ending = ''
+    if end_tag:
+        ending = '</{tag}>'
+
+    fmt = '<{tag} {attrs}>{inner_html}' + ending
+    return format_html(fmt, tag=tag, attrs=mark_safe(flatatt(attrs)), inner_html=str(inner_html))
 
