@@ -1,5 +1,5 @@
 name = 'django_materialize_nav'
-version = '1.0.0'
+version = '1.0.1'
 description = 'Django materialize css support.'
 url = 'https://github.com/justengel/django_materialize_nav'
 author = 'Justin Engel'
