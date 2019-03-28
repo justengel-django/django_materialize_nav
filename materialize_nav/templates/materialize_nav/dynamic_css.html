@@ -1,10 +1,10 @@
 <style>
 {% if primary_color %}
     .primary-color{
-        background-color: {{ primary_color }};
+        background-color: {{ primary_color }} !important;
     }
     .primary-color-text{
-        color: {{ primary_color }};
+        color: {{ primary_color }} !important;
     }
 
     /* Places where primary color is used */
@@ -54,10 +54,10 @@
 
 {% if secondary_color %}
     .secondary-color{
-        background-color: {{ secondary_color }};
+        background-color: {{ secondary_color }} !important;
     }
     .secondary-color-text{
-        color: {{ secondary_color }};
+        color: {{ secondary_color }} !important;
     }
 
     /* Places where secondary color is used */
@@ -264,10 +264,10 @@
 
 {% if success_color %}
     .success-color{
-        background-color: {{ success_color }};
+        background-color: {{ success_color }} !important;
     }
     .success-color-text{
-        color: {{ success_color }};
+        color: {{ success_color }} !important;
     }
 
     input:not([type]):focus.valid ~ label,
@@ -298,10 +298,10 @@
 
 {% if error_color %}
     .error-color{
-        background-color: {{ error_color }};
+        background-color: {{ error_color }} !important;
     }
     .error-color-text{
-        color: {{ error_color }};
+        color: {{ error_color }} !important;
     }
 
     input:not([type]):focus.invalid ~ label,
@@ -332,10 +332,10 @@
 
 {% if link_color %}
     .link-color{
-        background-color: {{ link_color }};
+        background-color: {{ link_color }} !important;
     }
     .link-color-text{
-        color: {{ link_color }};
+        color: {{ link_color }} !important;
     }
 
     a {

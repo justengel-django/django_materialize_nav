@@ -115,10 +115,10 @@ var DYNAMIC_CSS = `
 <style>
 /* ========== Primary Color ========== */
 .primary-color{
-    background-color: {{ primary_color }};
+    background-color: {{ primary_color }} !important;
 }
 .primary-color-text{
-    color: {{ primary_color }};
+    color: {{ primary_color }} !important;
 }
 
 /* Places where primary color is used */
@@ -168,10 +168,10 @@ nav {
 
 /* ========== Secondary Color ========== */
 .secondary-color{
-    background-color: {{ secondary_color }};
+    background-color: {{ secondary_color }} !important;
 }
 .secondary-color-text{
-    color: {{ secondary_color }};
+    color: {{ secondary_color }} !important;
 }
 
 /* Places where secondary color is used */
