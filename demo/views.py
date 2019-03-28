@@ -5,7 +5,7 @@ from .tables import BasicTable
 
 
 def get_nav_context():
-    context = {'PRIMARY_COLOR': 'teal', 'SECONDARY_COLOR': 'purple'}
+    context = {'site_name': 'demo', 'PRIMARY_COLOR': 'teal', 'SECONDARY_COLOR': 'purple'}
     return context
 
 

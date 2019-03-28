@@ -43,7 +43,7 @@ from materialize_nav.context_processors import get_context
 
 def show_page(request):
     # Get the context with the style settings
-    context = get_context(primary_color='teal')
+    context = get_context(site_name='demo', title='Basic Content', primary_color='teal')
     
     context["object"] = "MyObject"
     return render(request, "my_page.html", context)
@@ -83,6 +83,8 @@ The base template can be used by extending the materialize base nav.
 
 Materialize nav comes with several style options used in the template context variables listed below.
 
+  * site_name
+  * title
   * HIDE_CONTAINER
   * SHOW_SIDENAV
   * FIXED_SIDENAV
@@ -100,9 +102,13 @@ This is an alternative to manually providing all of the template context variabl
 ```python
 # settings.py
 
-MATERIALIZE_HIDE_CONTAINER = False
-MATERIALIZE_SHOW_SIDENAV = True
-MATERIALIZE_FIXED_SIDENAV = False
+MATERIALIZE_SITE_NAME = None  # Display this name in the navbar as the main name
+MATERIALIZE_TITLE = None  # This is the page title displayed as the browser tab name
+
+MATERIALIZE_HIDE_CONTAINER = False  # If True make the page take up the full width
+MATERIALIZE_SHOW_SIDENAV = True  # If True have a menu button available to open up the side navigation menu
+MATERIALIZE_FIXED_SIDENAV = False  # If True and SHOW_SIDENAV make the side navigation menu always showing
+
 MATERIALIZE_PRIMARY_COLOR = 'materialize-red lighten-2'
 MATERIALIZE_SECONDARY_COLOR = 'teal'
 MATERIALIZE_PRIMARY_COLOR_LIGHT = '#e51c23'
@@ -119,8 +125,9 @@ There are two methods for changing the default coloring for Materialize CSS.
   * The old method is to use the templatetag `include_dynamic_css` which would use the django template system to generate 
     a style tag with the proper css classes overridden.
 
-  * The new method includes the `materialize_nav/materialize_nav_colors.js` file which uses javascript to create a 
-    style tag to edit the proper css classes. This method should require less work from django to change the style.
+  * The new method only requires using the `base.html`. It includes the `materialize_nav/materialize_nav_colors.js` 
+    file which uses javascript to create a style tag to edit the proper css classes. This method should require less 
+    work from django to change the style.
 
 
 ## Goals
