@@ -8,7 +8,6 @@ See Also:
 """
 import os
 import glob
-import sys
 from setuptools import setup, Extension, find_packages
 
 
@@ -28,7 +27,7 @@ def get_meta(filename):
 
 if __name__ == "__main__":
     # Variables
-    meta = get_meta('materialize_nav/__version__.py')
+    meta = get_meta('materialize_nav/__meta__.py')
     name = meta['name']
     version = meta['version']
     description = meta['description']
@@ -40,13 +39,13 @@ if __name__ == "__main__":
                                       'demo', 'demo/migrations'))
 
     # Extensions
-    extensions = []
-    # module1 = Extension('libname',
-    #                     # define_macros=[('MAJOR_VERSION', '1')],
-    #                     # extra_compile_args=['-std=c99'],
-    #                     sources=['file.c', 'dir/file.c'],
-    #                     include_dirs=['./dir'])
-    # extensions.append(module1)
+    extensions = [
+        # Extension('libname',
+        #           # define_macros=[('MAJOR_VERSION', '1')],
+        #           # extra_compile_args=['-std=c99'],
+        #           sources=['file.c', 'dir/file.c'],
+        #           include_dirs=['./dir'])
+    ]
 
     setup(name=name,
           version=version,
@@ -72,9 +71,8 @@ if __name__ == "__main__":
           ext_modules=extensions,  # C extensions
           packages=packages,
           include_package_data=True,
-          # package_data={
-          #     'package': []
-          #     },
+          package_data={pkg: ['*', '*/*', '*/*/*', '*/*/*/*', '*/*/*/*/*']
+                        for pkg in packages if '/' not in pkg and '\\' not in pkg},
 
           # Data files outside of packages
           # data_files=[('my_data', ['data/my_data.dat'])],
