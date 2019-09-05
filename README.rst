@@ -106,7 +106,7 @@ Materialize nav comes with several style options used in the template context va
   * ERROR_COLOR
   * LINK_COLOR
   
-If you went through the `Setup Context Processors` step then you can modify several settings to change the default style.
+If you went through the ``Setup Context Processors`` step then you can modify several settings to change the default style.
 This is an alternative to manually providing all of the template context variables.
 
 
@@ -135,10 +135,10 @@ Styling process
 
 There are two methods for changing the default coloring for Materialize CSS.
 
-  * The old method is to use the templatetag `include_dynamic_css` which would use the django template system to generate 
+  * The old method is to use the templatetag ``include_dynamic_css`` which would use the django template system to generate
     a style tag with the proper css classes overridden.
 
-  * The new method only requires using the `base.html`. It includes the `materialize_nav/materialize_nav_colors.js` 
+  * The new method only requires using the ``base.html``. It includes the ``materialize_nav/materialize_nav_colors.js``
     file which uses javascript to create a style tag to edit the proper css classes. This method should require less 
     work from django to change the style.
 
