@@ -65,6 +65,8 @@ The base template can be used by extending the materialize base nav.
 
 
 {% block sidenav_items %}
+    {# One option is to override "materialize_nav/sidenav_items.html" #}
+    {# OR use "block sidenav_items" and list your items or include another template. #}
     {# This makes the sidenav items reusable in other templates #}
     {% include "my_app/sidenav_items.html" %}
 {% endblock %}
