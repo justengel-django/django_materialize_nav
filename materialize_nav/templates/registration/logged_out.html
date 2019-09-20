@@ -1,14 +1,10 @@
 {% extends 'materialize_nav/base.html' %}
-{% load slat_ldap %}
+{% load materialize_nav %}
 
 {% block contents %}
     <aside style="float: left; width: 250px; margin: 0 10px 10px 0; display: block;">
-            {% render_user_background user %}
-{#            {% render_user_image user %}#}
-{#            <p>{{ user.username }}</p>#}
-{#            <p>{{ user.email }}</p>#}
+        {% render_user_background user %}
     </aside>
-
 
     <h1>Guest</h1>
 
