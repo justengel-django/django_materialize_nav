@@ -129,6 +129,11 @@ This is an alternative to manually providing all of the template context variabl
     MATERIALIZE_ERROR_COLOR = None
     MATERIALIZE_LINK_COLOR = None
 
+    USER_THUMBNAIL_PROPERTY = 'profile.thumbnail'  # For user.profile.thumbnail
+    USER_BACKGROUND_PROPERTY = 'profile.background'  # For user.profile.background
+    # USER_THUMBNAIL = 'accounts/default_user.png'  # This is a default image
+    # USER_BACKGROUND_IMAGE = 'accounts/default_user.png'  # This is a default image
+
 
 Styling process
 ---------------
