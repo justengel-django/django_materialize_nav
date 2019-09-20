@@ -5,7 +5,7 @@
     {% endif %}
 
     {% block site_name %}
-    <a href="/" class="brand-logo center">{{ site_name }}</a>
+    <a href="/" class="brand-logo center">{% if MATERIALIZE_SITE_NAME %}{{ MATERIALIZE_SITE_NAME }}{% elif MATERIALIZE_TITLE %}{{ MATERIALIZE_TITLE }}{% else %}{{ site_name }}{% endif %}</a>
     {% endblock %}
 
     <!-- Navbar navigation items -->

@@ -57,8 +57,8 @@ def get_context(request=None, site_name=None, title=None, hide_container=None, s
         link_color = mysettings.MATERIALIZE_LINK_COLOR
 
     return {
-        'site_name': site_name,
-        'title': title,
+        'MATERIALIZE_SITE_NAME': site_name,
+        'MATERIALIZE_TITLE': title,
 
         'HIDE_CONTAINER': hide_container,
         'SHOW_SIDENAV': show_sidenav,

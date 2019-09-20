@@ -93,8 +93,8 @@ Styling controls
 
 Materialize nav comes with several style options used in the template context variables listed below.
 
-  * site_name
-  * title
+  * MATERIALIZE_SITE_NAME
+  * MATERIALIZE_TITLE
   * HIDE_CONTAINER
   * SHOW_SIDENAV
   * FIXED_SIDENAV
