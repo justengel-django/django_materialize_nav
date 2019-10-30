@@ -8,7 +8,6 @@
 {# Display django.contrib.messages #}
 {% materialize_messages %}
 
-
 <script type="text/javascript">
   // Color variables
   var primary_color = "{{ PRIMARY_COLOR }}";
@@ -19,22 +18,6 @@
   var error_color = "{{ ERROR_COLOR }}";
   var link_color = "{{ LINK_COLOR }}";
 
-  // Auto Init materialize javascript components
-  M.AutoInit();
-
-  // Turn off the container for small screens
-  if(is_small()){
-    turn_off_container();
-  }
-
-  check_pickers();
-  check_card_reveal();
-  check_table_of_contents();
-</script>
-
-{% block scripts %}{% endblock %}
-
-<script type="text/javascript">
   // Change the CSS Colors from the context variables
   change_css_colors();
 </script>
