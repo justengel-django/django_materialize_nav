@@ -112,7 +112,7 @@ var COLORS = {
 
 
 var DYNAMIC_CSS = `
-<style>
+<style id="materialize_dynamic_style">
 /* ========== Primary Color ========== */
 .primary-color{
     background-color: {{ primary_color }} !important;
@@ -565,7 +565,7 @@ function change_css_colors(){
         sheet.id = 'materialize_dynamic_style';
         document.body.appendChild(sheet);
     }
-    sheet.innerHTML = custom_css;
+    sheet.outerHTML = custom_css;  // Remove the old script tag too (outerHTML).
 }
 
 
