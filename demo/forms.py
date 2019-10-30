@@ -1,4 +1,5 @@
 from django import forms
+from materialize_nav import forms as material_forms
 
 
 DATE_INPUT_FORMATS = ['%b %d, %Y', '%B %d, %Y']
@@ -14,6 +15,8 @@ class BasicForm(forms.Form):
     time_value = forms.TimeField(widget=forms.TimeInput(attrs={'class': 'timepicker'}), input_formats=TIME_INPUT_FORMATS)
     datetime_value = forms.DateTimeField(widget=forms.TextInput(attrs={'class': 'datetimepicker'}), input_formats=DATETIME_INPUT_FORMATS)
 
+    # check_value = forms.BooleanField()  # Does not show. Needs span
+
     # ===== BELOW DOES NOT WORK!!!!! =====
     # class Meta:
     #     widgets = {
@@ -21,3 +24,12 @@ class BasicForm(forms.Form):
     #         }
 
 
+class MaterializeForm(forms.Form):
+    name = forms.CharField(max_length=255)
+    email = forms.EmailField()
+    checks = forms.MultipleChoiceField(choices=[(0, 'Zero'), (1, 'One'), (2, 'Two'), (3, 'Three')], required=False)
+
+    date_value = material_forms.DateField()
+    time_value = material_forms.TimeField()
+    datetime_value = material_forms.DateTimeField()
+    check_value = material_forms.BooleanField(required=False)
