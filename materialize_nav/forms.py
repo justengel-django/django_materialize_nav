@@ -65,9 +65,18 @@ class DateTimeField(forms.DateTimeField):
 class CheckboxInput(forms.CheckboxInput):
     template_name = 'materialize_nav/forms/widgets/checkbox.html'
 
+    def __init__(self, *args, **kwargs):
+        self._label = kwargs.pop('label', None)
+        super().__init__(*args, **kwargs)
+
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        context['widget']['label'] = pretty_name(name)
+
+        label = self._label
+        if label is None:
+            label = pretty_name(name)
+        context['widget']['label'] = label
+
         return context
 
 
@@ -75,6 +84,6 @@ class BooleanField(forms.BooleanField):
     widget = CheckboxInput
 
     def __init__(self, *args, **kwargs):
-        kwargs['label'] = kwargs.get('label', False)  # Do not show the label. The input will create the label.
+        kwargs['widget'] = kwargs.get('widget', CheckboxInput(label=kwargs.pop('label', None)))
+        kwargs['label'] = False  # Do not show the label. The input will create the label.
         super().__init__(*args, **kwargs)
-

@@ -32,4 +32,4 @@ class MaterializeForm(forms.Form):
     date_value = material_forms.DateField()
     time_value = material_forms.TimeField()
     datetime_value = material_forms.DateTimeField()
-    check_value = material_forms.BooleanField(required=False)
+    check_value = material_forms.BooleanField(required=False, label='Check this for success')
