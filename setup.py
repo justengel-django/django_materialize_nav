@@ -35,8 +35,8 @@ if __name__ == "__main__":
     author = meta['author']
     author_email = meta['author_email']
     keywords = 'Django Materialize CSS'
-    packages = find_packages(exclude=('MaterializeNavSite', 'MaterializeNavSite/settings',
-                                      'demo', 'demo/migrations'))
+    packages = find_packages(exclude=('demo_site', 'demo_site/settings',
+                                      'demo_app', 'demo_app/migrations'))
 
     # Extensions
     extensions = [

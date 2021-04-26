@@ -19,7 +19,7 @@ from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
-    path('', include('demo.urls')),
+    path('', include('demo_app.urls')),
 
     # path('login/', auth_views.login, name='login'),
     # path('logout/', auth_views.logout, {"next_page": "/login/"}, name='logout'),
@@ -34,7 +34,8 @@ if settings.DEBUG:
     # Serve static files
     from django.conf.urls.static import static
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-    urlpatterns += staticfiles_urlpatterns() + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += staticfiles_urlpatterns() + \
+                   static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
     # Debug toolbar urls
     try:

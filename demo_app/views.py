@@ -8,7 +8,7 @@ def get_nav_context():
     """Using get nav context method is not a reliable as changing the settings! This will change all of the views
     with this context, but will not change other views like the login page. Use the settings to change the login page.
     """
-    context = {'site_name': 'demo', 'PRIMARY_COLOR': 'teal', 'SECONDARY_COLOR': 'purple'}
+    context = {'site_name': 'demo_app', 'PRIMARY_COLOR': 'teal', 'SECONDARY_COLOR': 'purple'}
     return context
 
 

@@ -1,6 +1,8 @@
 from .development import *
 # from .production import *
 
+MATERIALIZE_SITE_NAME = 'Demo Site Settings'
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '!!!!!!!!!!SECRET_KEY_GOES_HERE!!!!!!!!!!'
 # ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
