@@ -1,5 +1,6 @@
 from django.conf import settings
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from .utils import static
+
 
 __all__ = ['mysettings']
 
@@ -10,11 +11,21 @@ class Defaults(object):
 
 class AppSettings(object):
     def __init__(self, defaults=None):
+        super().__init__()
+
+        if defaults is None:
+            defaults = Defaults()
         self.defaults = defaults
 
     def __getattr__(self, name):
         default = getattr(self.defaults, name, None)
         return getattr(settings, name, default)
+
+    def __setattr__(self, name, value):
+        if name != 'defaults':
+            setattr(self.defaults, name, value)
+        else:
+            super().__setattr__(name, value)
 
     def __dir__(self):
         return dir(self.defaults)

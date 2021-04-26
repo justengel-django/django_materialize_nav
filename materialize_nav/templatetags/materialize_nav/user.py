@@ -1,8 +1,9 @@
 import operator
 from django.utils.safestring import mark_safe
-from django.contrib.staticfiles.templatetags.staticfiles import static
 from .base import register
+
 from materialize_nav.settings import mysettings
+from materialize_nav.utils import static
 
 
 __all__ = ["render_user_chip", "render_user_image", "render_user_background"]

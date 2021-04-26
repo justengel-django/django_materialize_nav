@@ -57,6 +57,8 @@ def get_context(request=None, site_name=None, title=None, hide_container=None, s
         link_color = mysettings.MATERIALIZE_LINK_COLOR
 
     return {
+        'DJANGO_BASE_TEMPLATE': 'materialize_nav/base.html',
+
         'MATERIALIZE_SITE_NAME': site_name,
         'MATERIALIZE_TITLE': title,
 
